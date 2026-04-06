@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baitong Birthday Plan</title>
+  <meta name="description" content="Birthday date plan in Bangkok for Baitong.">
+  <meta name="theme-color" content="#f3c9d7">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;700;800&family=Prompt:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#fff8f4;
+      --paper:#fffdfb;
+      --ink:#5c4450;
+      --muted:#8b6a78;
+      --pink:#f3c9d7;
+      --pink-2:#efb7cb;
+      --line:#f2dbe4;
+      --shadow:0 16px 44px -24px rgba(118,76,93,.35);
+      --ease-out-quart:cubic-bezier(0.25,1,0.5,1);
+      --ease-out-quint:cubic-bezier(0.22,1,0.36,1);
+      --font-body:"Noto Sans Thai", "Segoe UI", Arial, sans-serif;
+      --font-display:"Prompt", "Noto Sans Thai", "Segoe UI", Arial, sans-serif;
+      --space-1:.4rem;
+      --space-2:.75rem;
+      --space-3:1rem;
+      --space-4:1.4rem;
+      --space-5:2rem;
+      --space-6:clamp(2.4rem, 5.5vw, 4rem);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--font-body);
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, #fff 0%, #fff7fb 36%, var(--bg) 100%),
+        linear-gradient(135deg, rgba(239,183,203,.08), rgba(255,255,255,0) 42%);
+      line-height:1.5;
+    }
+    .container{width:min(1040px, 92vw); margin:auto}
+    .scroll-progress{
+      position:fixed;
+      top:0; left:0;
+      height:3px;
+      width:100%;
+      z-index:30;
+      background:rgba(255,255,255,.35);
+      backdrop-filter: blur(3px);
+    }
+    .scroll-progress__bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, #efb7cb, #d97fa2);
+      transform-origin:left center;
+      transition:width .12s linear;
+    }
+    .hero{
+      position:relative;
+      min-height:78vh;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      padding:3.8rem 0 2.8rem;
+    }
+    .hero-bg{
+      --hero-photo:url("assets/images/hero.png");
+      position:absolute; inset:0;
+      background:
+        linear-gradient(160deg, rgba(255,255,255,.72), rgba(255,245,249,.85)),
+        var(--hero-photo) center/cover no-repeat;
+      z-index:-2;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:0;
+      background:radial-gradient(circle at 20% 20%, rgba(255,255,255,.7), transparent 40%);
+      z-index:-1;
+    }
+    .hero-card{
+      width:min(820px, 94%);
+      background:linear-gradient(165deg, rgba(255,255,255,.86), rgba(255,248,252,.72));
+      border:1px solid #fff;
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(6px);
+      padding:clamp(1.25rem, 3vw, 2rem);
+      text-align:center;
+      position:relative;
+    }
+    .hero-sticker{
+      position:absolute;
+      right:-14px;
+      top:-14px;
+      background:#ca5a88;
+      color:#fff;
+      border-radius:999px;
+      font-size:.74rem;
+      font-weight:800;
+      letter-spacing:.04em;
+      padding:.46rem .8rem;
+      transform:rotate(8deg);
+      box-shadow:0 10px 24px -16px rgba(118,76,93,.6);
+    }
+    .badge{
+      display:inline-block;
+      background:#fff;
+      border:1px solid var(--line);
+      color:#c65e87;
+      border-radius:999px;
+      padding:.35rem .8rem;
+      font-size:.82rem;
+      font-weight:700;
+      margin-bottom:.8rem;
+    }
+    h1{
+      font-family:var(--font-display);
+      margin:.25rem 0;
+      font-size:clamp(2.2rem,6vw,4.3rem);
+      line-height:1.03;
+      letter-spacing:-.03em;
+      color:#7c2f58;
+      text-wrap:balance;
+      text-align:center;
+      font-style:normal;
+      margin-inline:auto;
+      max-width:22ch;
+    }
+    .sub{margin:.5rem 0 0;color:var(--muted)}
+    .emoji{font-size:1.45rem; margin:0 .2rem; animation:float 4s ease-in-out infinite}
+    .emoji:nth-child(2){animation-delay:.8s}
+    .emoji:nth-child(3){animation-delay:1.6s}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .actions{margin-top:var(--space-3); display:flex; flex-wrap:wrap; gap:var(--space-2); justify-content:center}
+    .countdown-chip{
+      margin: .8rem auto 0;
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.48rem .85rem;
+      border-radius:999px;
+      border:1px solid #f1d4df;
+      background:#fff;
+      color:#9c4d73;
+      font-size:.83rem;
+      font-weight:700;
+      box-shadow:0 10px 22px -18px rgba(118,76,93,.55);
+    }
+    .btn{
+      position:relative;
+      overflow:hidden;
+      border:0; border-radius:999px; cursor:pointer;
+      padding:.7rem 1.1rem; font-weight:700; font-size:.9rem;
+      transition:transform .2s var(--ease-out-quart), background .2s var(--ease-out-quart), box-shadow .2s var(--ease-out-quart);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:scale(.98)}
+    .btn:focus-visible,
+    .menu-link:focus-visible{
+      outline:3px solid #ebb2c7;
+      outline-offset:2px;
+    }
+    .btn-primary{background:var(--pink-2); color:#fff}
+    .btn-ghost{background:#fff; color:#b34b75; border:1px solid var(--line)}
+    .btn.is-playing{
+      box-shadow:0 0 0 0 rgba(239,183,203,.7);
+      animation:softPulse 1.9s ease-out infinite;
+    }
+    @keyframes softPulse{
+      0%{box-shadow:0 0 0 0 rgba(239,183,203,.55)}
+      70%{box-shadow:0 0 0 12px rgba(239,183,203,0)}
+      100%{box-shadow:0 0 0 0 rgba(239,183,203,0)}
+    }
+    .btn-ripple{
+      position:absolute;
+      width:10px; height:10px;
+      border-radius:50%;
+      background:rgba(255,255,255,.65);
+      transform:translate(-50%,-50%) scale(0);
+      pointer-events:none;
+      animation:ripple .58s var(--ease-out-quart) forwards;
+    }
+    @keyframes ripple{
+      to{
+        transform:translate(-50%,-50%) scale(15);
+        opacity:0;
+      }
+    }
+
+    section{padding:var(--space-6) 0}
+    .hero-anim{
+      opacity:0;
+      transform:translateY(14px) scale(.99);
+      transition:opacity .55s var(--ease-out-quint), transform .55s var(--ease-out-quint);
+      transition-delay:var(--d,0ms);
+    }
+    .hero-ready .hero-anim{
+      opacity:1;
+      transform:translateY(0) scale(1);
+    }
+    .title{text-align:center; margin-bottom:clamp(1rem, 2vw, 1.6rem)}
+    .title h2{
+      font-family:var(--font-display);
+      font-size:clamp(1.45rem, 3.5vw, 2.25rem);
+      margin:.15rem 0;
+      letter-spacing:-.02em;
+      color:#8a375f;
+    }
+    .title p{margin:0; color:var(--muted)}
+    .timeline{
+      position:relative;
+      width:min(860px, 100%);
+      margin:0 auto;
+      display:grid;
+      gap:var(--space-3);
+      padding-top:var(--space-1);
+    }
+    .timeline::before{
+      content:""; position:absolute; left:18px; top:0; bottom:0; width:2px; background:var(--line);
+    }
+    .timeline::after{
+      content:"";
+      position:absolute;
+      left:18px; top:0;
+      width:2px;
+      height:var(--timeline-fill, 0%);
+      background:linear-gradient(180deg, #efb7cb, #d97fa2);
+      transition:height .45s var(--ease-out-quint);
+    }
+    .item{position:relative; padding-left:3rem; margin:0}
+    .dot{
+      position:absolute; left:11px; top:14px; width:16px; height:16px; border-radius:50%;
+      background:var(--pink-2); border:4px solid #ffeef5;
+    }
+    .card{
+      background:var(--paper); border:1px solid var(--line); border-radius:18px;
+      padding:clamp(.9rem, 1.6vw, 1.15rem) clamp(1rem, 2vw, 1.2rem);
+      box-shadow:var(--shadow);
+      transition:transform .25s var(--ease-out-quart), box-shadow .25s var(--ease-out-quart);
+      border-left:6px solid #efb7cb;
+    }
+    .card:hover{transform:translateY(-3px); box-shadow:0 20px 40px -26px rgba(118,76,93,.45)}
+    .card-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:.75rem;
+      margin-bottom:.35rem;
+    }
+    .activity-mark{
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      padding:.32rem .62rem;
+      border-radius:999px;
+      font-size:.78rem;
+      font-weight:800;
+      letter-spacing:.01em;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+    .activity-icon{
+      width:1.2rem;
+      height:1.2rem;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      font-size:.76rem;
+      background:#fff;
+    }
+    .activity-note{
+      margin-top:.55rem;
+      font-size:.78rem;
+      font-weight:700;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+    .card--travel{
+      border-left-color:#8aa7ff;
+      background:linear-gradient(160deg, #fbfcff, #f4f7ff);
+    }
+    .card--travel .activity-mark{
+      color:#3659c6;
+      background:#ecf1ff;
+      border-color:#d7e2ff;
+    }
+    .card--travel .activity-note{ color:#4c67bf; }
+    .card--lunch{
+      border-left-color:#f29f6b;
+      background:linear-gradient(160deg, #fffdf9, #fff5ea);
+    }
+    .card--lunch .activity-mark{
+      color:#a95622;
+      background:#fff0e3;
+      border-color:#ffd8bc;
+    }
+    .card--lunch .activity-note{ color:#b05d2a; }
+    .card--temple{
+      border-left-color:#7dc8a1;
+      background:linear-gradient(160deg, #fbfffd, #edf9f2);
+    }
+    .card--temple .activity-mark{
+      color:#23754e;
+      background:#e5f6ed;
+      border-color:#c6e9d5;
+    }
+    .card--temple .activity-note{ color:#2d855a; }
+    .card--walk{
+      border-left-color:#b89ae8;
+      background:linear-gradient(160deg, #fcfbff, #f4f0ff);
+    }
+    .card--walk .activity-mark{
+      color:#6642a8;
+      background:#f0e9ff;
+      border-color:#ddd0ff;
+    }
+    .card--walk .activity-note{ color:#7750bd; }
+    .time{font-size:.82rem; color:#c65e87; font-weight:700}
+    .card h3{margin:.1rem 0 .25rem; font-size:1.1rem}
+    .card h3{font-family:var(--font-display)}
+    .card p{margin:.2rem 0 0; color:var(--muted)}
+    .menu-link{
+      display:inline-block; margin-top:.6rem; padding:.45rem .7rem; border-radius:999px;
+      background:#fff; border:1px solid var(--line); color:#b34b75; font-size:.82rem; font-weight:700;
+      text-decoration:none;
+      min-height:44px;
+      line-height:1.45;
+      padding-inline:1rem;
+    }
+
+    .memory-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:var(--space-2);
+      max-width:860px;
+      margin:var(--space-4) auto 0;
+    }
+    .memory-card{
+      border:1px solid var(--line);
+      background:var(--paper);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+      isolation:isolate;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      transition:transform .28s var(--ease-out-quart), box-shadow .28s var(--ease-out-quart);
+    }
+    .memory-card img{
+      width:auto;
+      max-width:100%;
+      max-height:min(78vh, 860px);
+      margin:0 auto;
+      object-fit:contain;
+      object-position:center center;
+      display:block;
+      background:#fff;
+    }
+    .memory-card::after{
+      content:attr(data-note);
+      position:absolute;
+      left:.7rem; bottom:.65rem;
+      background:rgba(255,255,255,.85);
+      border:1px solid #fff;
+      border-radius:999px;
+      padding:.25rem .6rem;
+      font-size:.74rem;
+      color:#9a5b77;
+      font-weight:700;
+    }
+    .memory-card.missing{
+      display:grid;
+      place-items:center;
+      background:linear-gradient(140deg,#fff,#ffeef5);
+      color:#b06a88;
+      font-weight:700;
+      text-align:center;
+      padding:.8rem;
+    }
+    .memory-card.missing img{display:none}
+    .m-main{grid-area:main}
+    .memory-tip{
+      margin-top:.8rem;
+      color:var(--muted);
+      font-size:.85rem;
+      text-align:center;
+    }
+    .invite-wrap{
+      margin-top:var(--space-3);
+      text-align:center;
+    }
+    .invite-popup{
+      margin: .8rem auto 0;
+      width:min(420px, 100%);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:1rem;
+      display:none;
+    }
+    .invite-popup.show{display:block}
+    .invite-popup img{
+      width:100%;
+      max-height:320px;
+      object-fit:contain;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff7fb;
+      margin-bottom:.7rem;
+    }
+    .invite-caption{
+      margin:0 0 .7rem;
+      color:#8d5570;
+      font-size:.88rem;
+      font-weight:600;
+      line-height:1.45;
+    }
+    .memory-card:hover{
+      transform:translateY(-3px) scale(1.005);
+      box-shadow:0 20px 40px -26px rgba(118,76,93,.45);
+    }
+    .reveal{
+      opacity:0;
+      transform:translateY(20px);
+      transition:opacity .6s var(--ease-out-quint), transform .6s var(--ease-out-quint);
+      will-change:opacity, transform;
+    }
+    .reveal.show{
+      opacity:1;
+      transform:translateY(0);
+    }
+    footer{
+      text-align:center;
+      padding:clamp(1.3rem, 3vw, 2rem) 1rem clamp(1.7rem, 4vw, 2.5rem);
+      color:#a85a7f;
+      border-top:1px solid var(--line);
+      background:rgba(255,255,255,.5);
+    }
+    @media (max-width: 920px){
+      .memory-grid{grid-template-columns:1fr}
+      .hero-card{width:min(720px, 95%)}
+    }
+    @media (max-width: 760px){
+      .actions{
+        flex-direction:column;
+        align-items:stretch;
+        width:min(100%, 420px);
+        margin-inline:auto;
+      }
+      .btn{
+        min-height:44px;
+        width:100%;
+      }
+      .countdown-chip{
+        width:min(100%, 420px);
+        justify-content:center;
+        text-align:center;
+        line-height:1.45;
+        padding:.58rem .85rem;
+      }
+      .card-top{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:.35rem;
+      }
+      .time{font-size:.86rem;}
+      .invite-popup{
+        width:min(100%, 460px);
+        padding:.9rem;
+      }
+    }
+    @media (max-width: 540px){
+      .hero{min-height:68vh}
+      .hero-card{padding:1.25rem}
+      .hero-sticker{
+        right:10px;
+        top:-12px;
+        transform:rotate(4deg);
+      }
+      .timeline::before{left:14px}
+      .timeline::after{left:14px}
+      .item{padding-left:2.4rem}
+      .dot{left:7px}
+      .memory-grid{grid-template-columns:1fr}
+      .memory-card::after{
+        left:.5rem;
+        bottom:.5rem;
+        font-size:.71rem;
+      }
+      .invite-caption{
+        font-size:.85rem;
+      }
+    }
+    @media (max-width: 480px){
+      h1{
+        font-size:clamp(1.75rem, 9vw, 2.4rem);
+        max-width:16ch;
+      }
+      .badge{
+        font-size:.76rem;
+      }
+      .activity-mark{
+        font-size:.74rem;
+      }
+      .card{
+        border-left-width:4px;
+      }
+    }
+    @media (orientation: landscape) and (max-height: 540px){
+      .hero{
+        min-height:auto;
+        padding:2.3rem 0 1.5rem;
+      }
+      .memory-card img{
+        max-height:68vh;
+      }
+    }
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      .emoji, .btn.is-playing, .btn-ripple{animation:none !important}
+      .hero-anim, .reveal, .btn, .card, .memory-card{
+        transition:none !important;
+        transform:none !important;
+      }
+      .hero-anim, .reveal{opacity:1 !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-progress" aria-hidden="true">
+    <div class="scroll-progress__bar" id="scrollBar"></div>
+  </div>
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-card container">
+      <span class="hero-sticker hero-anim" style="--d:18ms">BIRTHDAY MODE</span>
+      <span class="badge hero-anim" style="--d:40ms">Birthday plan for Baitong • Bangkok</span>
+      <h1 class="hero-anim" style="--d:120ms">FROM NORMAL SUNDAY TO BEST VIBES ✨</h1>
+      <p class="sub hero-anim" style="--d:180ms">A birthday date in Bangkok</p>
+      <p class="hero-anim" style="--d:240ms">
+        <span class="emoji">🎂</span>
+        <span class="emoji">✨</span>
+        <span class="emoji">🎉</span>
+      </p>
+      <p class="sub hero-anim" style="--d:280ms">วันเกิดปีนี้ของใบตอง - เรียบง่าย อบอุ่น และเต็มไปด้วยช่วงเวลาน่ารักของเรา</p>
+      <div class="actions hero-anim" style="--d:340ms">
+        <a class="btn btn-primary" href="#timeline">ดูแพลนเที่ยวกัน !!!</a>
+        <button id="musicBtn" class="btn btn-ghost" type="button">▶ เล่นเพลงประกอบ</button>
+      </div>
+      <p class="countdown-chip hero-anim" style="--d:390ms" id="countdownText">กำลังคำนวณเวลาถอยหลัง...</p>
+      <audio id="bgMusic" preload="none" loop src="assets/audio/birthday.mp3"></audio>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="timeline">
+      <div class="title reveal">
+        <h2>Timeline • Birthday Date</h2>
+        <p>แผนวันเกิดแบบชิลๆ เดินทางง่าย และได้เก็บความทรงจำดีๆ</p>
+      </div>
+
+      <div class="timeline">
+        <article class="item reveal">
+          <span class="dot"></span>
+          <div class="card card--travel">
+            <div class="card-top">
+              <div class="activity-mark"><span class="activity-icon">🚆</span> Travel</div>
+              <div class="time">14:00 - 14:30</div>
+            </div>
+            <h3>Travel • เดินทาง</h3>
+            <p>นั่ง BTS จากวงเวียนใหญ่ไป Siam หรือ Chidlom แล้วเดิน skywalk ไป CentralWorld ได้เลย</p>
+            <div class="activity-note">Transit vibe · start smooth</div>
+          </div>
+        </article>
+
+        <article class="item reveal">
+          <span class="dot"></span>
+          <div class="card card--lunch">
+            <div class="card-top">
+              <div class="activity-mark"><span class="activity-icon">🍝</span> Lunch Date</div>
+              <div class="time">14:30 - 16:00</div>
+            </div>
+            <h3>Lunch Date • Spaghetti Factory @ CentralWorld 6th floor</h3>
+            <p>มื้อกลางวันที่ใบตองอยากลอง อยากกินชีสเทพๆ อร่อยๆ เค้าจะไปลองกับเธอนะ 🍝</p>
+            <a class="menu-link" target="_blank" rel="noopener noreferrer" href="https://cdn.prod.website-files.com/6482d695329bceb916499926/64915b66441ad51e4b419455_Spaghetti%20Factory%20Menu%202022.pdf">เปิดเมนูร้าน (PDF)</a>
+            <div class="activity-note">Food moment · birthday favorite</div>
+          </div>
+        </article>
+
+        <article class="item reveal">
+          <span class="dot"></span>
+          <div class="card card--temple">
+            <div class="card-top">
+              <div class="activity-mark"><span class="activity-icon">🕯️</span> Temple Visit</div>
+              <div class="time">16:00 - 17:00</div>
+            </div>
+            <h3>Temple Visit • Wat Pathum Wanaram</h3>
+            <p>แวะวัดเงียบๆ ใจกลางเมือง อยู่ระหว่าง CentralWorld กับ Siam Paragon</p>
+            <a class="menu-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps?gs_lcrp=EgRlZGdlKgYIABBFGDkyBggAEEUYOTIHCAEQIRifBTIHCAIQIRifBTIHCAMQIRifBTIHCAQQIRifBTIHCAUQIRifBTIHCAYQIRifBTIHCAcQIRifBTIHCAgQIRifBdIBBzUyNmowajGoAgCwAgA&um=1&ie=UTF-8&fb=1&gl=th&sa=X&geocode=KUO73h_OnuIwMUOBDSBhpS9G&daddr=969+Rama+I+Rd,+Khwaeng+Pathum+Wan,+Pathum+Wan,+Bangkok+10330">ดู Google Maps</a>
+            <div class="activity-note">Calm moment · reset heart</div>
+          </div>
+        </article>
+
+        <article class="item reveal">
+          <span class="dot"></span>
+          <div class="card card--walk">
+            <div class="card-top">
+              <div class="activity-mark"><span class="activity-icon">🌆</span> Evening Walk</div>
+              <div class="time">17:00 - 19:00</div>
+            </div>
+            <h3>Evening Walk • เดินเล่นช่วงเย็น</h3>
+            <p>เลือกได้ตามอารมณ์: BACC สำหรับเดินชมนิทรรศการ หรือ Siam Square หรือเราจะไปที่อื่น ๆ ก็ด้ายยย เค้าตามใจเธอออออ</p>
+            <div class="activity-note">Golden hour · memory time</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="gallery">
+      <div class="title reveal">
+        <h2>Baitong's Birthday</h2>
+        <p>ตอบรับคำเชิญ กดปุ่มนี้</p>
+      </div>
+      <div class="invite-wrap reveal">
+        <button type="button" class="btn btn-primary" id="inviteBtn">ตอบรับคำเชิญ</button>
+        <div class="invite-popup" id="invitePopup" role="dialog" aria-modal="false" aria-label="ยืนยันคำเชิญ">
+          <img id="inviteImage" src="assets/images/photo-3.png" alt="Invitation image photo-3">
+          <p class="invite-caption">โหลดรูปนี้ส่งไปให้ น้ำซุป ในไอจีเพื่อตอบรับคำเชิญ</p>
+          <a id="inviteDownload" class="menu-link" href="assets/images/photo-3.png" download="photo-3.png">โหลดรูป photo-3.png</a>
+        </div>
+      </div>
+      <div class="memory-grid">
+        <figure class="memory-card m-main reveal" data-note="คนที่สวยที่สุดในโลก">
+          <img id="img-main" src="assets/images/hero.png" alt="Main birthday moment">
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    another year, another memory 💖
+  </footer>
+
+  <script>
+    (function () {
+      document.body.classList.add("hero-ready");
+      var heroBg = document.querySelector(".hero-bg");
+      if (heroBg) {
+        var heroPhotoCandidates = [
+          "assets/images/hero.png",
+          "assets/images/hero.jpg",
+          "assets/images/main.png",
+          "assets/images/main.jpg"
+        ];
+        var hi = 0;
+        function tryHeroPhoto() {
+          if (hi >= heroPhotoCandidates.length) return;
+          var probe = new Image();
+          probe.onload = function () {
+            heroBg.style.setProperty("--hero-photo", 'url("' + heroPhotoCandidates[hi] + '")');
+          };
+          probe.onerror = function () {
+            hi += 1;
+            if (hi >= heroPhotoCandidates.length) {
+            }
+            tryHeroPhoto();
+          };
+          probe.src = heroPhotoCandidates[hi];
+        }
+        tryHeroPhoto();
+      }
+      var btn = document.getElementById("musicBtn");
+      var inviteBtn = document.getElementById("inviteBtn");
+      var invitePopup = document.getElementById("invitePopup");
+      var inviteImage = document.getElementById("inviteImage");
+      var inviteDownload = document.getElementById("inviteDownload");
+      var countdownText = document.getElementById("countdownText");
+      var audio = document.getElementById("bgMusic");
+      var scrollBar = document.getElementById("scrollBar");
+      var timelineEl = document.querySelector(".timeline");
+      var playing = false;
+      var audioCandidates = [
+        "assets/audio/birthday.mp3",
+        "assets/audio/song.mp3",
+        "assets/audio/music.mp3",
+        "assets/audio/track.mp3"
+      ];
+
+      function setMissingCard(imgEl, message) {
+        if (!imgEl || !imgEl.parentElement) return;
+        var card = imgEl.parentElement;
+        card.classList.add("missing");
+        if (!card.querySelector(".missing-text")) {
+          var p = document.createElement("p");
+          p.className = "missing-text";
+          p.textContent = message;
+          card.appendChild(p);
+        }
+      }
+
+      function loadFirstAvailableAudio(candidates, done) {
+        var i = 0;
+        function tryNext() {
+          if (i >= candidates.length) {
+            done(false);
+            return;
+          }
+          var probe = new Audio();
+          probe.preload = "metadata";
+          probe.src = candidates[i];
+          probe.addEventListener("canplaythrough", function onOk() {
+            audio.src = candidates[i];
+            done(true);
+          }, { once: true });
+          probe.addEventListener("error", function onErr() {
+            i += 1;
+            if (i >= candidates.length) {
+            }
+            tryNext();
+          }, { once: true });
+        }
+        tryNext();
+      }
+
+      var imageCandidates = {
+        "img-main": ["assets/images/hero.png","assets/images/hero.jpg","assets/images/main.png","assets/images/main.jpg","assets/images/photo-main.png","assets/images/photo-main.jpg","assets/images/1.png","assets/images/1.jpg"]
+      };
+      var inviteImageCandidates = [
+        "assets/images/photo-3.png",
+        "assets/images/photo-3.jpg",
+        "assets/images/gallery-3.png",
+        "assets/images/gallery-3.jpg",
+        "assets/images/3.png",
+        "assets/images/3.jpg"
+      ];
+
+      function assignFirstImage(imgId, candidates) {
+        var img = document.getElementById(imgId);
+        if (!img) return;
+        var i = 0;
+        function tryNext() {
+          if (i >= candidates.length) {
+            setMissingCard(img, "ยังไม่พบรูปสำหรับช่องนี้\nเพิ่มไฟล์ใน assets/images\n(" + imgId + ")");
+            if (imgId === "img-main") {
+            }
+            return;
+          }
+          var test = new Image();
+          test.onload = function () {
+            img.src = candidates[i];
+            if (imgId === "img-main") {
+            }
+          };
+          test.onerror = function () { i += 1; tryNext(); };
+          test.src = candidates[i];
+        }
+        tryNext();
+      }
+
+      Object.keys(imageCandidates).forEach(function (id) {
+        assignFirstImage(id, imageCandidates[id]);
+      });
+
+      if (inviteImage && inviteDownload) {
+        var ii = 0;
+        function tryInviteImage() {
+          if (ii >= inviteImageCandidates.length) {
+            if (inviteBtn) inviteBtn.disabled = true;
+            inviteDownload.removeAttribute("href");
+            inviteDownload.textContent = "ยังไม่มีรูปสำหรับโหลด";
+            inviteDownload.setAttribute("aria-disabled", "true");
+            return;
+          }
+          var probeInvite = new Image();
+          probeInvite.onload = function () {
+            inviteImage.src = inviteImageCandidates[ii];
+            inviteDownload.href = inviteImageCandidates[ii];
+            inviteDownload.setAttribute("download", inviteImageCandidates[ii].split("/").pop());
+          };
+          probeInvite.onerror = function () {
+            ii += 1;
+            tryInviteImage();
+          };
+          probeInvite.src = inviteImageCandidates[ii];
+        }
+        tryInviteImage();
+      }
+
+      var revealEls = document.querySelectorAll(".reveal");
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("show");
+              if (entry.target.classList.contains("item") && timelineEl) {
+                var nodes = Array.prototype.slice.call(document.querySelectorAll(".timeline .item"));
+                var revealed = nodes.filter(function (node) { return node.classList.contains("show"); }).length;
+                var ratio = Math.max(0.08, revealed / nodes.length);
+                timelineEl.style.setProperty("--timeline-fill", (ratio * 100) + "%");
+              }
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.14, rootMargin: "0px 0px -6% 0px" });
+        revealEls.forEach(function (el) { io.observe(el); });
+      } else {
+        revealEls.forEach(function (el) { el.classList.add("show"); });
+      }
+
+      function updateScrollProgress() {
+        if (!scrollBar) return;
+        var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        var pct = (window.scrollY / max) * 100;
+        scrollBar.style.width = Math.min(100, Math.max(0, pct)) + "%";
+      }
+      window.addEventListener("scroll", updateScrollProgress, { passive: true });
+      updateScrollProgress();
+
+      function updateCountdown() {
+        if (!countdownText) return;
+        var target = new Date(2026, 3, 12, 0, 0, 0);
+        var now = new Date();
+        var diff = target.getTime() - now.getTime();
+        if (diff <= 0) {
+          countdownText.textContent = "ถึงวันเที่ยวของใบตองแล้ว! ไปสร้างความทรงจำกัน 💖";
+          return;
+        }
+        var totalSeconds = Math.floor(diff / 1000);
+        var days = Math.floor(totalSeconds / 86400);
+        var hours = Math.floor((totalSeconds % 86400) / 3600);
+        var minutes = Math.floor((totalSeconds % 3600) / 60);
+        var seconds = totalSeconds % 60;
+        countdownText.textContent =
+          "เหลืออีก " + days + " วัน " +
+          hours + " ชั่วโมง " +
+          minutes + " นาที " +
+          seconds + " วินาที ถึง 12/04/2569";
+      }
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      btn.addEventListener("pointerdown", function (e) {
+        var rect = btn.getBoundingClientRect();
+        var ripple = document.createElement("span");
+        ripple.className = "btn-ripple";
+        ripple.style.left = (e.clientX - rect.left) + "px";
+        ripple.style.top = (e.clientY - rect.top) + "px";
+        btn.appendChild(ripple);
+        setTimeout(function () { ripple.remove(); }, 620);
+      });
+
+      btn.addEventListener("click", function () {
+        if (!playing) {
+          loadFirstAvailableAudio(audioCandidates, function (ok) {
+            if (!ok) {
+              btn.textContent = "ไม่เจอไฟล์เพลงใน assets/audio";
+              return;
+            }
+            audio.play().then(function () {
+              playing = true;
+              btn.classList.add("is-playing");
+              btn.textContent = "❚❚ หยุดเพลงชั่วคราว";
+            }).catch(function () {
+              btn.textContent = "เบราว์เซอร์บล็อกเสียง • กดอีกครั้งเพื่อเล่น";
+            });
+          });
+        } else {
+          audio.pause();
+          playing = false;
+          btn.classList.remove("is-playing");
+          btn.textContent = "▶ เล่นเพลงประกอบ";
+        }
+      });
+
+      if (inviteBtn && invitePopup) {
+        inviteBtn.addEventListener("click", function () {
+          invitePopup.classList.toggle("show");
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") invitePopup.classList.remove("show");
+        });
+        document.addEventListener("click", function (e) {
+          if (!invitePopup.classList.contains("show")) return;
+          var clickedInsidePopup = invitePopup.contains(e.target);
+          var clickedInviteBtn = inviteBtn.contains(e.target);
+          if (!clickedInsidePopup && !clickedInviteBtn) {
+            invitePopup.classList.remove("show");
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
