@@ -689,7 +689,11 @@
         "assets/audio/birthday.mp3",
         "assets/audio/song.mp3",
         "assets/audio/music.mp3",
-        "assets/audio/track.mp3"
+        "assets/audio/track.mp3",
+        "assets/audio/birthday.m4a",
+        "assets/audio/song.m4a",
+        "assets/audio/music.m4a",
+        "assets/audio/track.m4a"
       ];
 
       function setMissingCard(imgEl, message) {
@@ -704,28 +708,32 @@
         }
       }
 
-      function loadFirstAvailableAudio(candidates, done) {
-        var i = 0;
-        function tryNext() {
-          if (i >= candidates.length) {
-            done(false);
-            return;
-          }
-          var probe = new Audio();
-          probe.preload = "metadata";
-          probe.src = candidates[i];
-          probe.addEventListener("canplaythrough", function onOk() {
-            audio.src = candidates[i];
-            done(true);
-          }, { once: true });
-          probe.addEventListener("error", function onErr() {
-            i += 1;
-            if (i >= candidates.length) {
+      async function tryPlayFromCandidates(candidates) {
+        var isFileProtocol = window.location.protocol === "file:";
+        var foundFile = false;
+        for (var i = 0; i < candidates.length; i += 1) {
+          var src = candidates[i];
+          var exists = true;
+          if (!isFileProtocol) {
+            try {
+              var res = await fetch(src, { method: "HEAD", cache: "no-store" });
+              exists = !!res.ok;
+            } catch (e) {
+              exists = false;
             }
-            tryNext();
-          }, { once: true });
+          }
+          if (!exists) continue;
+
+          foundFile = true;
+          audio.src = src;
+          try {
+            await audio.play();
+            return { ok: true };
+          } catch (e) {
+            // เครื่องนี้อาจไม่รองรับไฟล์นี้ ลองไฟล์ถัดไป
+          }
         }
-        tryNext();
+        return { ok: false, reason: foundFile ? "unsupported" : "missing" };
       }
 
       var imageCandidates = {
@@ -855,21 +863,18 @@
         setTimeout(function () { ripple.remove(); }, 620);
       });
 
-      btn.addEventListener("click", function () {
+      btn.addEventListener("click", async function () {
         if (!playing) {
-          loadFirstAvailableAudio(audioCandidates, function (ok) {
-            if (!ok) {
-              btn.textContent = "ไม่เจอไฟล์เพลงใน assets/audio";
-              return;
-            }
-            audio.play().then(function () {
-              playing = true;
-              btn.classList.add("is-playing");
-              btn.textContent = "❚❚ หยุดเพลงชั่วคราว";
-            }).catch(function () {
-              btn.textContent = "เบราว์เซอร์บล็อกเสียง • กดอีกครั้งเพื่อเล่น";
-            });
-          });
+          var result = await tryPlayFromCandidates(audioCandidates);
+          if (result.ok) {
+            playing = true;
+            btn.classList.add("is-playing");
+            btn.textContent = "❚❚ หยุดเพลงชั่วคราว";
+          } else if (result.reason === "unsupported") {
+            btn.textContent = "ไฟล์เพลงมีอยู่ แต่ iPhone เล่นไฟล์นี้ไม่ได้";
+          } else {
+            btn.textContent = "ไม่เจอไฟล์เพลงใน assets/audio";
+          }
         } else {
           audio.pause();
           playing = false;
